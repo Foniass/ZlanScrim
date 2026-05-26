@@ -3,6 +3,7 @@
 Plateforme de tournois multi-jeux (style ZLAN). Inscriptions Discord, brackets single-élimination, gestion admin.
 
 Déployée sur `scrim.mathisjacqueline.com` (Hetzner VPS, Caddy + systemd).
+Auto-deploy via GitHub Actions sur push `main`.
 
 ## Stack
 
