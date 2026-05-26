@@ -6,7 +6,6 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/dal";
 import { generateBracket } from "@/lib/bracket";
-import type { Prisma } from "@prisma/client";
 
 // ────────────── Tournament lifecycle ──────────────
 
@@ -230,7 +229,7 @@ export async function generateBracketForTournament(formData: FormData) {
 
   // Run everything inside a transaction so partial bracket creation can't
   // leave the tournament in a half-built state.
-  await db.$transaction(async (tx: Prisma.TransactionClient) => {
+  await db.$transaction(async (tx) => {
     // Wipe any existing rounds/matches (in case the admin regenerates).
     await tx.match.deleteMany({ where: { round: { tournamentId } } });
     await tx.round.deleteMany({ where: { tournamentId } });
@@ -371,7 +370,7 @@ export async function recordMatchResult(formData: FormData) {
 
   const winnerId = scoreA > scoreB ? match.teamAId : match.teamBId;
 
-  await db.$transaction(async (tx: Prisma.TransactionClient) => {
+  await db.$transaction(async (tx) => {
     await tx.match.update({
       where: { id: matchId },
       data: {
