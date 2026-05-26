@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { LogOut, Settings, User as UserIcon } from "lucide-react";
 import {
   DropdownMenu,
@@ -35,6 +36,9 @@ export function UserMenu({
   image?: string | null;
   role: "USER" | "ADMIN";
 }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -58,26 +62,24 @@ export function UserMenu({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {role === "ADMIN" ? (
-          <DropdownMenuItem render={(props) => <Link {...props} href="/admin" />}>
+          <DropdownMenuItem onClick={() => router.push("/admin")}>
             <Settings className="mr-2 h-4 w-4" />
             Administration
           </DropdownMenuItem>
         ) : null}
-        <DropdownMenuItem render={(props) => <Link {...props} href="/profil" />}>
+        <DropdownMenuItem onClick={() => router.push("/profil")}>
           <UserIcon className="mr-2 h-4 w-4" />
           Mon profil
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <form action={signOutAction}>
-          <DropdownMenuItem
-            render={(props) => <button type="submit" {...props} />}
-            variant="destructive"
-            className="w-full"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Se déconnecter
-          </DropdownMenuItem>
-        </form>
+        <DropdownMenuItem
+          variant="destructive"
+          disabled={pending}
+          onClick={() => startTransition(() => signOutAction())}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          {pending ? "Déconnexion..." : "Se déconnecter"}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
