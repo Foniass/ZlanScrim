@@ -1,0 +1,35 @@
+[Unit]
+Description=ZlanScrim — tournament hosting site
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=zlanscrim
+Group=zlanscrim
+WorkingDirectory=/opt/zlanscrim
+EnvironmentFile=/etc/zlanscrim/.env
+Environment=NODE_ENV=production
+Environment=PORT=3001
+Environment=HOSTNAME=127.0.0.1
+Environment=NODE_OPTIONS=--dns-result-order=ipv4first
+ExecStart=/usr/bin/node /opt/zlanscrim/node_modules/.bin/next start --port 3001 --hostname 127.0.0.1
+Restart=on-failure
+RestartSec=5
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+ReadWritePaths=/var/lib/zlanscrim
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+# /etc/caddy/Caddyfile snippet for ZlanScrim.
+# Caddy handles TLS automatically via Let's Encrypt (HTTP-01 on port 80).
+
+scrim.mathisjacqueline.com {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:3001
+}

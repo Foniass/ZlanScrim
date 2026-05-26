@@ -1,0 +1,39 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 178.105.219.195
+          username: zlanscrim
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            set -e
+            cd /opt/zlanscrim
+            git fetch --quiet
+            git reset --hard origin/main --quiet
+            npm ci
+            # source /etc/zlanscrim/.env so DATABASE_URL is set for migrate
+            set -a && source /etc/zlanscrim/.env && set +a
+            npx prisma migrate deploy
+            npx prisma generate
+            npm run build
+            # If the systemd unit file changed, copy it (needs sudo).
+            if ! cmp -s systemd/zlanscrim.service /etc/systemd/system/zlanscrim.service; then
+              sudo cp systemd/zlanscrim.service /etc/systemd/system/zlanscrim.service
+              sudo systemctl daemon-reload
+            fi
+            sudo /bin/systemctl restart zlanscrim

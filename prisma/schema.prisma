@@ -1,0 +1,170 @@
+// Prisma schema for ZlanScrim — tournament hosting site
+// Auth.js v5 models + tournament/team/bracket/match models.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ────────────── Auth.js v5 models ──────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("USER") // "USER" | "ADMIN"
+  accounts      Account[]
+  sessions      Session[]
+
+  signups            TournamentSignup[]
+  teamMembers        TeamMember[]
+  createdTournaments Tournament[]       @relation("CreatedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// ────────────── Tournament models ──────────────
+
+model Tournament {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  teamSize    Int       // 1 = solo, 2 = duos, 3 = trios, etc.
+  // "SIGNUPS_OPEN" | "SIGNUPS_CLOSED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED"
+  status      String    @default("SIGNUPS_OPEN")
+  startsAt    DateTime?
+  endedAt     DateTime?
+  createdById String
+  createdBy   User      @relation("CreatedBy", fields: [createdById], references: [id])
+
+  signups TournamentSignup[]
+  teams   Team[]
+  rounds  Round[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TournamentSignup {
+  id           String     @id @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // "PENDING" | "ACCEPTED" | "REJECTED"
+  status       String     @default("PENDING")
+  createdAt    DateTime   @default(now())
+
+  @@unique([tournamentId, userId])
+}
+
+model Team {
+  id           String     @id @default(cuid())
+  name         String
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  seed         Int?
+
+  members    TeamMember[]
+  matchesA   Match[]      @relation("TeamA")
+  matchesB   Match[]      @relation("TeamB")
+  wonMatches Match[]      @relation("WinnerTeam")
+
+  @@index([tournamentId])
+}
+
+model TeamMember {
+  id     String @id @default(cuid())
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+}
+
+model Round {
+  id           String     @id @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  order        Int        // 1, 2, 3...
+  name         String     // "Quarts", "Demies", "Finale"
+  gameName     String     // Game played this round (e.g., "Trackmania")
+  // "PENDING" | "IN_PROGRESS" | "COMPLETED"
+  status       String     @default("PENDING")
+
+  matches Match[]
+
+  @@unique([tournamentId, order])
+}
+
+model Match {
+  id      String @id @default(cuid())
+  roundId String
+  round   Round  @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  order   Int    // position in the round (top to bottom)
+
+  teamAId  String?
+  teamA    Team?   @relation("TeamA", fields: [teamAId], references: [id], onDelete: SetNull)
+  teamBId  String?
+  teamB    Team?   @relation("TeamB", fields: [teamBId], references: [id], onDelete: SetNull)
+  scoreA   Int?
+  scoreB   Int?
+  winnerId String?
+  winner   Team?   @relation("WinnerTeam", fields: [winnerId], references: [id], onDelete: SetNull)
+  // "PENDING" | "IN_PROGRESS" | "COMPLETED"
+  status   String  @default("PENDING")
+
+  // Bracket progression: this match's winner fills slot A or B of nextMatch.
+  nextMatchId String?
+  nextMatch   Match?  @relation("NextMatch", fields: [nextMatchId], references: [id], onDelete: SetNull)
+  prevMatches Match[] @relation("NextMatch")
+  nextSlot    String? // "A" | "B"
+
+  @@index([roundId])
+}
