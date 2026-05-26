@@ -21,19 +21,29 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            set -e
+            set -euxo pipefail
             cd /opt/zlanscrim
+            echo "::group::git pull"
             git fetch --quiet
             git reset --hard origin/main --quiet
+            git log -1 --format='HEAD: %h %s'
+            echo "::endgroup::"
+
+            echo "::group::npm ci"
             npm ci
-            # source /etc/zlanscrim/.env so DATABASE_URL is set for migrate
+            echo "::endgroup::"
+
+            echo "::group::prisma + build"
             set -a && source /etc/zlanscrim/.env && set +a
             npx prisma migrate deploy
             npx prisma generate
             npm run build
-            # If the systemd unit file changed, copy it (needs sudo).
-            if ! cmp -s systemd/zlanscrim.service /etc/systemd/system/zlanscrim.service; then
-              sudo cp systemd/zlanscrim.service /etc/systemd/system/zlanscrim.service
-              sudo systemctl daemon-reload
-            fi
+            echo "::endgroup::"
+
+            echo "::group::restart"
+            # NOTE: systemd unit changes require a one-time manual `sudo cp` +
+            # daemon-reload on the VPS (the zlanscrim user can't sudo cp).
             sudo /bin/systemctl restart zlanscrim
+            sleep 2
+            systemctl is-active zlanscrim
+            echo "::endgroup::"
