@@ -50,12 +50,20 @@ sudo -u ${APP_USER} mkdir -p /home/${APP_USER}/.ssh
 sudo -u ${APP_USER} chmod 700 /home/${APP_USER}/.ssh
 if [[ ! -f ${KEY_FILE} ]]; then
   sudo -u ${APP_USER} ssh-keygen -t ed25519 -N "" -f ${KEY_FILE} -C "deploy@${APP}"
-  sudo -u ${APP_USER} cat ${KEY_FILE}.pub >> /home/${APP_USER}/.ssh/authorized_keys
-  sudo -u ${APP_USER} chmod 600 /home/${APP_USER}/.ssh/authorized_keys
 fi
+# Authorize the deploy key on this same VPS (lets GitHub Actions SSH back in).
+# Use sudo -u with bash -c so the >> redirect runs as the app user, not root.
+PUB=$(cat ${KEY_FILE}.pub)
+sudo -u ${APP_USER} bash -c "
+  touch /home/${APP_USER}/.ssh/authorized_keys
+  chmod 600 /home/${APP_USER}/.ssh/authorized_keys
+  grep -qxF '${PUB}' /home/${APP_USER}/.ssh/authorized_keys || echo '${PUB}' >> /home/${APP_USER}/.ssh/authorized_keys
+"
+# Fix ownership in case a previous (buggy) run left root-owned files.
+chown -R ${APP_USER}:${APP_USER} /home/${APP_USER}/.ssh
 # Ensure github.com host key trusted so `git clone` doesn't prompt.
 sudo -u ${APP_USER} bash -c "ssh-keyscan -t rsa,ecdsa,ed25519 github.com 2>/dev/null >> /home/${APP_USER}/.ssh/known_hosts"
-sort -u /home/${APP_USER}/.ssh/known_hosts -o /home/${APP_USER}/.ssh/known_hosts
+sudo -u ${APP_USER} sort -u /home/${APP_USER}/.ssh/known_hosts -o /home/${APP_USER}/.ssh/known_hosts
 
 echo "==> 6/9 Restricted sudo for systemctl restart"
 SUDO_FILE=/etc/sudoers.d/${APP}
