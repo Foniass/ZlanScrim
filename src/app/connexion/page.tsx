@@ -27,8 +27,13 @@ export default async function ConnexionPage({
   }
 
   return (
-    <div className="container mx-auto flex max-w-md flex-col items-center justify-center px-4 py-20">
+    <div className="mx-auto flex max-w-md flex-col items-center justify-center py-20">
       <Card className="w-full">
+        <div className="zlan-header rounded-t-xl px-5 py-3">
+          <h2 className="text-neon text-sm font-bold tracking-wider uppercase">
+            Connexion
+          </h2>
+        </div>
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Bienvenue sur ZlanScrim</CardTitle>
           <CardDescription>

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { LogOut, Settings, User as UserIcon } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,7 +57,7 @@ export function UserMenu({
         <DropdownMenuLabel className="font-normal">
           <div className="text-sm font-medium">{name ?? "Connecté"}</div>
           {role === "ADMIN" ? (
-            <div className="text-muted-foreground text-xs">Administrateur</div>
+            <div className="text-neon text-xs">Administrateur</div>
           ) : null}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -67,11 +67,6 @@ export function UserMenu({
             Administration
           </DropdownMenuItem>
         ) : null}
-        <DropdownMenuItem onClick={() => router.push("/profil")}>
-          <UserIcon className="mr-2 h-4 w-4" />
-          Mon profil
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
           disabled={pending}

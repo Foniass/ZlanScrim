@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { SiteHeader } from "@/components/site-header";
+import { AppShell } from "@/components/app-shell";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,12 +22,11 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${geistSans.variable} h-full antialiased`}
+      className={`${geistSans.variable} dark h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <Toaster richColors />
+      <body className="min-h-full">
+        <AppShell>{children}</AppShell>
+        <Toaster richColors theme="dark" />
       </body>
     </html>
   );

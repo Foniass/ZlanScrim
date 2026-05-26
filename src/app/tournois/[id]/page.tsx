@@ -15,7 +15,6 @@ import {
 import {
   type SignupStatus,
   type TournamentStatus,
-  signupStatusLabel,
   teamSizeLabel,
   tournamentStatusLabel,
   tournamentStatusVariant,
@@ -57,42 +56,46 @@ export default async function TournamentPage({
     | null;
   const isAdmin = session?.user?.role === "ADMIN";
   const isAccepted = mySignupStatus === "ACCEPTED";
-  // Show full participant view once accepted, OR if tournament is complete (history is public).
   const showParticipantView =
     isAdmin || isAccepted || status === "COMPLETED";
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-10">
+    <div className="space-y-6">
       <Link
-        href="/"
-        className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1 text-sm"
+        href="/inscriptions"
+        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm"
       >
         <ArrowLeft className="h-4 w-4" />
-        Retour aux tournois
+        Retour
       </Link>
 
-      <header className="mb-6 flex items-start justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {tournament.name}
-          </h1>
-          {tournament.description ? (
-            <p className="text-muted-foreground mt-2 max-w-2xl">
+      <div className="bg-card ring-border overflow-hidden rounded-lg ring-1">
+        <div className="zlan-header px-5 py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">
+                {tournament.name}
+              </h1>
+              <div className="text-foreground/70 mt-1 flex items-center gap-3 text-xs">
+                <span className="flex items-center gap-1">
+                  <Users className="h-3.5 w-3.5" />
+                  {teamSizeLabel(tournament.teamSize)}
+                </span>
+                <span>{tournament._count.signups} inscrits</span>
+              </div>
+            </div>
+            <Badge variant={tournamentStatusVariant[status]}>
+              {tournamentStatusLabel[status]}
+            </Badge>
+          </div>
+        </div>
+        {tournament.description ? (
+          <div className="border-border border-t px-5 py-3">
+            <p className="text-muted-foreground text-sm">
               {tournament.description}
             </p>
-          ) : null}
-        </div>
-        <Badge variant={tournamentStatusVariant[status]}>
-          {tournamentStatusLabel[status]}
-        </Badge>
-      </header>
-
-      <div className="text-muted-foreground mb-8 flex items-center gap-4 text-sm">
-        <span className="flex items-center gap-1">
-          <Users className="h-4 w-4" />
-          {teamSizeLabel(tournament.teamSize)}
-        </span>
-        <span>{tournament._count.signups} inscrits</span>
+          </div>
+        ) : null}
       </div>
 
       {showParticipantView ? (

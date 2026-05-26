@@ -43,35 +43,41 @@ export default async function ManageTournamentPage({
   const status = tournament.status as TournamentStatus;
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-10">
+    <div className="space-y-6">
       <Link
         href="/admin"
-        className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1 text-sm"
+        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm"
       >
         <ArrowLeft className="h-4 w-4" />
         Tous les tournois
       </Link>
 
-      <header className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {tournament.name}
-          </h1>
-          {tournament.description ? (
-            <p className="text-muted-foreground mt-2 max-w-2xl">
-              {tournament.description}
-            </p>
-          ) : null}
-          <div className="text-muted-foreground mt-2 text-sm">
-            {teamSizeLabel(tournament.teamSize)}
+      <div className="bg-card ring-border overflow-hidden rounded-lg ring-1">
+        <div className="zlan-header px-5 py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">
+                {tournament.name}
+              </h1>
+              <div className="text-foreground/70 mt-1 text-xs">
+                {teamSizeLabel(tournament.teamSize)}
+              </div>
+            </div>
+            <Badge variant={tournamentStatusVariant[status]}>
+              {tournamentStatusLabel[status]}
+            </Badge>
           </div>
         </div>
-        <Badge variant={tournamentStatusVariant[status]}>
-          {tournamentStatusLabel[status]}
-        </Badge>
-      </header>
+        {tournament.description ? (
+          <div className="border-border border-t px-5 py-3">
+            <p className="text-muted-foreground text-sm">
+              {tournament.description}
+            </p>
+          </div>
+        ) : null}
+      </div>
 
-      <div className="mb-8 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         {status === "SIGNUPS_OPEN" ? (
           <form
             action={async () => {
@@ -123,7 +129,7 @@ export default async function ManageTournamentPage({
         ) : null}
       </div>
 
-      <Tabs defaultValue="signups">
+      <Tabs defaultValue="signups" className="pt-2">
         <TabsList>
           <TabsTrigger value="signups">Inscriptions</TabsTrigger>
           <TabsTrigger value="teams">Équipes</TabsTrigger>
@@ -150,3 +156,4 @@ export default async function ManageTournamentPage({
     </div>
   );
 }
+

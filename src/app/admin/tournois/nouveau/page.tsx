@@ -14,10 +14,10 @@ export default async function NewTournamentPage() {
   await requireAdmin();
 
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-10">
+    <div className="mx-auto max-w-2xl space-y-6">
       <Link
         href="/admin"
-        className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1 text-sm"
+        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm"
       >
         <ArrowLeft className="h-4 w-4" />
         Retour

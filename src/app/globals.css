@@ -48,83 +48,133 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ZLAN-inspired dark palette: deep navy background, neon-green primary, subtle purple accents. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Base */
+  --background: oklch(0.16 0.035 260);
+  --foreground: oklch(0.98 0 0);
+
+  /* Cards & surfaces — slightly lighter than bg so they pop on the navy */
+  --card: oklch(0.21 0.04 260);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.22 0.04 260);
+  --popover-foreground: oklch(0.98 0 0);
+
+  /* Primary = neon green */
+  --primary: oklch(0.88 0.24 145);
+  --primary-foreground: oklch(0.16 0.05 260);
+
+  /* Secondary = soft purple — used for tonal buttons / chips */
+  --secondary: oklch(0.32 0.12 295);
+  --secondary-foreground: oklch(0.98 0 0);
+
+  /* Muted = dim navy text & subtle surfaces */
+  --muted: oklch(0.24 0.04 260);
+  --muted-foreground: oklch(0.7 0.02 260);
+
+  /* Accent = used by Base UI on hover/focus */
+  --accent: oklch(0.28 0.06 260);
+  --accent-foreground: oklch(0.98 0 0);
+
+  /* Destructive = red */
+  --destructive: oklch(0.66 0.22 28);
+
+  /* Borders & inputs */
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.88 0.24 145 / 50%);
+
+  /* Charts */
+  --chart-1: oklch(0.88 0.24 145);
+  --chart-2: oklch(0.55 0.22 295);
+  --chart-3: oklch(0.7 0.18 200);
+  --chart-4: oklch(0.75 0.18 60);
+  --chart-5: oklch(0.65 0.2 0);
+  --radius: 0.5rem;
+
+  /* Sidebar palette */
+  --sidebar: oklch(0.13 0.035 260);
+  --sidebar-foreground: oklch(0.85 0.02 260);
+  --sidebar-primary: oklch(0.88 0.24 145);
+  --sidebar-primary-foreground: oklch(0.16 0.05 260);
+  --sidebar-accent: oklch(0.32 0.12 295);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(1 0 0 / 6%);
+  --sidebar-ring: oklch(0.88 0.24 145 / 50%);
+
+  /* ZLAN-specific custom colors */
+  --neon-green: oklch(0.88 0.24 145);
+  --zlan-purple: oklch(0.45 0.18 295);
+  --zlan-purple-deep: oklch(0.3 0.15 295);
 }
 
+/* Dark mode alias — palette is already dark by default but kept for shadcn class consumers. */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.16 0.035 260);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.21 0.04 260);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.22 0.04 260);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.88 0.24 145);
+  --primary-foreground: oklch(0.16 0.05 260);
+  --secondary: oklch(0.32 0.12 295);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.24 0.04 260);
+  --muted-foreground: oklch(0.7 0.02 260);
+  --accent: oklch(0.28 0.06 260);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.66 0.22 28);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.88 0.24 145 / 50%);
+  --sidebar: oklch(0.13 0.035 260);
+  --sidebar-foreground: oklch(0.85 0.02 260);
+  --sidebar-primary: oklch(0.88 0.24 145);
+  --sidebar-primary-foreground: oklch(0.16 0.05 260);
+  --sidebar-accent: oklch(0.32 0.12 295);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(1 0 0 / 6%);
+  --sidebar-ring: oklch(0.88 0.24 145 / 50%);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+
   html {
     @apply font-sans;
+    color-scheme: dark;
   }
+
+  body {
+    @apply bg-background text-foreground;
+    /* Subtle tri-pattern overlay on the navy bg. Layered: pattern then a slight
+       radial highlight to lift the top-center. */
+    background-image:
+      radial-gradient(
+        circle at 50% -20%,
+        oklch(0.32 0.12 295 / 0.15) 0%,
+        transparent 50%
+      ),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cpath d='M22 4 L40 36 L4 36 Z' fill='none' stroke='rgba(255,255,255,0.025)' stroke-width='1'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-repeat: repeat;
+  }
+}
+
+/* ZLAN-style purple-gradient header strip for featured sections. */
+.zlan-header {
+  background-image: linear-gradient(
+    100deg,
+    var(--zlan-purple) 0%,
+    var(--zlan-purple-deep) 60%,
+    oklch(0.21 0.04 260) 100%
+  );
+}
+
+/* Neon-green text used for active nav, logo, etc. */
+.text-neon {
+  color: var(--neon-green);
 }
